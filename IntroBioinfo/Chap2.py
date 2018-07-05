@@ -4,13 +4,18 @@ Created on 2018/06/12
 @author: Shohei
 '''
 
-is_cont=True
+def genet():
+    yield 'あ'
+    yield 'い'
+    yield 'う'
 
-while is_cont:
-    print('press any key')
-    c = input()
-    
-    if c == 'end':
-        is_cont=False
-    else:
-        print('You pressed '+c)
+obj = genet();
+
+text = obj.__next__()
+print(text)
+text = obj.__next__()
+print(text)
+text = obj.__next__()
+print(text)
+text = obj.__next__()
+print(text)
