@@ -4,7 +4,7 @@ Created on 2018/08/25
 @author: Shohei
 '''
 
-import random, inspect, copy
+import random, inspect, copy, math
 
 def main():
     #ソートすべき数値配列の生成
@@ -13,10 +13,13 @@ def main():
     unsorted2 = list(range(50,100))
     #unsorted1.extend(unsorted2)
     
+    print(unsorted1)
     print(bubble_sort(unsorted1))
     print(bubble_sort_improved(unsorted1))
     print(selection_sort(unsorted1))
     print(insertion_sort(unsorted1))
+    print(insertion_sort2(unsorted1))
+    print(shell_sort(unsorted1))
 
 #ループ回数をプリントする
 def loop_printer(func_name,loops):
@@ -101,7 +104,7 @@ def selection_sort(unsorted_array):
     return working_array
 
 #挿入ソート
-#最小値を探して、現在のポジションと交換
+#insertion_valueより左側を比較していく。
 def insertion_sort(unsorted_array):
     
     counter = 0
@@ -121,12 +124,87 @@ def insertion_sort(unsorted_array):
             else:
                 insertion_index = j + 1
                 break
-        
+
         working_array[insertion_index] = insertion_value
         
     loop_printer(inspect.currentframe().f_code.co_name, counter)
 
     return working_array
+
+#挿入ソート2
+#insertion_valueより左側を比較していく。
+def insertion_sort2(unsorted_array):
+    
+    counter = 0
+    working_array = copy.deepcopy(unsorted_array)
+    
+    i = 1
+    while i < len(working_array):
+        counter = counter + 1
+        
+        insertion_value = working_array[i]
+        j = i
+        
+        if working_array[j-1] > insertion_value:
+        
+            while True:
+                counter = counter + 1
+                    
+                working_array[j] = working_array[j-1]
+                j = j - 1
+                    
+                if j < 1 or working_array[j-1] <= insertion_value:
+                    break
+            
+            working_array[j] = insertion_value
+            
+        i = i + 1
+        
+    loop_printer(inspect.currentframe().f_code.co_name, counter)
+
+    return working_array
+
+#シェルソート
+#https://programming-place.net/ProgrammingPlacePlus/algorithm/sort/005.html
+def shell_sort(unsorted_array):
+    
+    counter = 0
+    working_array = copy.deepcopy(unsorted_array)
+    
+    #間隔を設定する
+    h = 1
+    while(h < len(working_array) // 9):
+        h = 3 * h + 1
+    
+    #挿入ソートを行う
+    while h > 0:
+        counter = counter + 1
+        
+        for i in range(h, len(working_array)):
+            counter = counter + 1
+            
+            insertion_value = working_array[i]
+        
+            if working_array[i-h] > insertion_value:
+                j = i
+                while True:
+                    counter = counter + 1
+                    
+                    working_array[j] = working_array[j-h]
+                    j = j - h
+                    
+                    if j < h or working_array[j-h] <= insertion_value:
+                        break
+                    
+                working_array[j] = insertion_value
+        
+        h = h // 3
+        
+        
+    loop_printer(inspect.currentframe().f_code.co_name, counter)
+
+    return working_array
+
 
 if __name__ == "__main__":
     main()
