@@ -4,22 +4,29 @@ Created on 2018/08/25
 @author: Shohei
 '''
 
-import random, inspect, copy, math
+import random, inspect, copy
+from astropy.time.utils import split
 
 def main():
     #ソートすべき数値配列の生成
     unsorted1 = list(range(50))
     random.shuffle(unsorted1)
     unsorted2 = list(range(50,100))
+    unsorted3 = [3,3,2,2,1,1]
     #unsorted1.extend(unsorted2)
     
-    print(unsorted1)
-    print(bubble_sort(unsorted1))
-    print(bubble_sort_improved(unsorted1))
-    print(selection_sort(unsorted1))
-    print(insertion_sort(unsorted1))
-    print(insertion_sort2(unsorted1))
-    print(shell_sort(unsorted1))
+    tested_array = copy.deepcopy(unsorted1)
+
+    print(tested_array)
+    print(bubble_sort(tested_array))
+    print(bubble_sort_improved(tested_array))
+    print(selection_sort(tested_array))
+    print(insertion_sort(tested_array))
+    print(insertion_sort2(tested_array))
+    print(shell_sort(tested_array))
+    print(merge_sort(tested_array))
+    
+    print("end")
 
 #ループ回数をプリントする
 def loop_printer(func_name,loops):
@@ -205,6 +212,57 @@ def shell_sort(unsorted_array):
 
     return working_array
 
+#マージソート
+#配列を2つに分割していって、その後2つのソートされた配列から先頭の要素を比較して小さい方から取り出して新しい配列を作り出す。
+def merge_sort(unsorted_array):
+    #カウンターを普通に使おうとすると、int型がイミュータブルである影響で再帰中に加算されたものが反映されない。そこでわざとリストにしている。
+    counter = [0]
+    working_array = copy.deepcopy(unsorted_array)
+    
+    split_process(working_array, counter)
+
+    loop_printer(inspect.currentframe().f_code.co_name, counter[0])
+
+    return working_array
+
+def split_process(main_array, counter):
+    
+    #分割操作
+    if(len(main_array) > 1):
+        counter[0] = counter[0] + 1
+        
+        m = len(main_array) // 2
+        
+        a1 = main_array[:m]
+        a2 = main_array[m:]
+        
+        split_process(a1, counter)
+        split_process(a2, counter)
+        merge_process(a1, a2, main_array, counter)
+        
+def merge_process(array1, array2, merged_array, counter):
+    i = 0
+    j = 0
+    
+    while(i < len(array1) or j < len(array2)):
+        #どちらかの配列の要素がまだ残っているとき
+        counter[0] = counter[0] + 1
+        
+        if(j >= len(array2) or (i < len(array1) and array1[i] <= array2[j])):
+            #array2の要素を使い切った場合、または
+            #array1とarray2の両方の要素が残っていて、array1のほうが小さい場合は
+            #array1の要素をmerged_arrayの最後尾に追加する。
+            
+            merged_array[i+j] = array1[i]
+            i = i + 1
+        
+        else:
+            merged_array[i+j] = array2[j]
+            j = j + 1
+        
+    
+    
+        
 
 if __name__ == "__main__":
     main()
