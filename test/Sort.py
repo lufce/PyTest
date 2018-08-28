@@ -4,12 +4,11 @@ Created on 2018/08/25
 @author: Shohei
 '''
 
-import random, inspect, copy
-from astropy.time.utils import split
+import random, inspect, copy, time
 
 def main():
     #ソートすべき数値配列の生成
-    unsorted1 = list(range(50))
+    unsorted1 = list(range(1000))
     random.shuffle(unsorted1)
     unsorted2 = list(range(50,100))
     unsorted3 = [3,3,2,2,1,1]
@@ -18,24 +17,34 @@ def main():
     tested_array = copy.deepcopy(unsorted1)
 
     print(tested_array)
-    print(bubble_sort(tested_array))
-    print(bubble_sort_improved(tested_array))
-    print(selection_sort(tested_array))
-    print(insertion_sort(tested_array))
-    print(insertion_sort2(tested_array))
-    print(shell_sort(tested_array))
-    print(merge_sort(tested_array))
+    
+#     print(bubble_sort(tested_array))
+#     print(bubble_sort_improved(tested_array))
+#     print(selection_sort(tested_array))
+#     print(insertion_sort(tested_array))
+#     print(insertion_sort2(tested_array))
+#     print(shell_sort(tested_array))
+#     print(merge_sort(tested_array))
+    
+    
+    bubble_sort(tested_array)
+    bubble_sort_improved(tested_array)
+    selection_sort(tested_array)
+    insertion_sort(tested_array)
+    insertion_sort2(tested_array)
+    shell_sort(tested_array)
+    merge_sort(tested_array)
     
     print("end")
 
-#ループ回数をプリントする
-def loop_printer(func_name,loops):
-    print("{0}: {1} loops".format(func_name, loops))
+#ループ回数と所要時間をプリントする
+def loop_printer(func_name, loops, runtime):
+    print("{0}: {1} loops: {2} sec.".format(func_name, loops, runtime))
 
 #バブルソート
 #隣同士の要素の比較を最初から最後まで何度も行う
 def bubble_sort(unsorted_array):
-
+    t1 = time.time()
     counter = 0
     working_array = copy.deepcopy(unsorted_array)
 
@@ -50,14 +59,15 @@ def bubble_sort(unsorted_array):
                 working_array[j] = working_array[j+1]
                 working_array[j+1] = buf
                 
-    loop_printer(inspect.currentframe().f_code.co_name, counter)
+    t2 = time.time()
+    loop_printer(inspect.currentframe().f_code.co_name, counter, t2 - t1)
     
     return working_array
 
 #改良版バブルソート
 #swappedがfalseのままということはそれ以降の配列はすでにソートされていることを示す。
 def bubble_sort_improved(unsorted_array):
-    
+    t1 = time.time()
     counter = 0
     working_array = copy.deepcopy(unsorted_array)
 
@@ -78,14 +88,15 @@ def bubble_sort_improved(unsorted_array):
         if swapped == False:
             break
 
-    loop_printer(inspect.currentframe().f_code.co_name, counter)
+    t2 = time.time()
+    loop_printer(inspect.currentframe().f_code.co_name, counter, t2 - t1)
 
     return working_array
 
 #選択ソート
 #最小値を探して、現在のポジションと交換
 def selection_sort(unsorted_array):
-    
+    t1 = time.time()
     counter = 0
     working_array = copy.deepcopy(unsorted_array)
     
@@ -105,15 +116,16 @@ def selection_sort(unsorted_array):
         temp = working_array[i]
         working_array[i] = working_array[min_index]
         working_array[min_index] = temp
-
-    loop_printer(inspect.currentframe().f_code.co_name, counter)
+    
+    t2 = time.time()
+    loop_printer(inspect.currentframe().f_code.co_name, counter, t2 - t1)
 
     return working_array
 
 #挿入ソート
 #insertion_valueより左側を比較していく。
 def insertion_sort(unsorted_array):
-    
+    t1 = time.time()
     counter = 0
     working_array = copy.deepcopy(unsorted_array)
     
@@ -133,15 +145,16 @@ def insertion_sort(unsorted_array):
                 break
 
         working_array[insertion_index] = insertion_value
-        
-    loop_printer(inspect.currentframe().f_code.co_name, counter)
+    
+    t2 = time.time()    
+    loop_printer(inspect.currentframe().f_code.co_name, counter, t2 - t1)
 
     return working_array
 
 #挿入ソート2
 #insertion_valueより左側を比較していく。
 def insertion_sort2(unsorted_array):
-    
+    t1 = time.time()
     counter = 0
     working_array = copy.deepcopy(unsorted_array)
     
@@ -166,15 +179,16 @@ def insertion_sort2(unsorted_array):
             working_array[j] = insertion_value
             
         i = i + 1
-        
-    loop_printer(inspect.currentframe().f_code.co_name, counter)
+    
+    t2 = time.time()    
+    loop_printer(inspect.currentframe().f_code.co_name, counter, t2 - t1)
 
     return working_array
 
 #シェルソート
 #https://programming-place.net/ProgrammingPlacePlus/algorithm/sort/005.html
 def shell_sort(unsorted_array):
-    
+    t1 = time.time()
     counter = 0
     working_array = copy.deepcopy(unsorted_array)
     
@@ -207,21 +221,23 @@ def shell_sort(unsorted_array):
         
         h = h // 3
         
-        
-    loop_printer(inspect.currentframe().f_code.co_name, counter)
+    t2 = time.time()    
+    loop_printer(inspect.currentframe().f_code.co_name, counter, t2 - t1)
 
     return working_array
 
 #マージソート
 #配列を2つに分割していって、その後2つのソートされた配列から先頭の要素を比較して小さい方から取り出して新しい配列を作り出す。
 def merge_sort(unsorted_array):
-    #カウンターを普通に使おうとすると、int型がイミュータブルである影響で再帰中に加算されたものが反映されない。そこでわざとリストにしている。
+    t1 = time.time()
+    #カウンターを普通に使おうとすると、int型がイミュータブルである影響で再帰中に加算されたものが反映されない。そこでわざとミュータブルなリストにしている。
     counter = [0]
     working_array = copy.deepcopy(unsorted_array)
     
     split_process(working_array, counter)
 
-    loop_printer(inspect.currentframe().f_code.co_name, counter[0])
+    t2 = time.time()
+    loop_printer(inspect.currentframe().f_code.co_name, counter[0], t2 - t1)
 
     return working_array
 
@@ -260,9 +276,65 @@ def merge_process(array1, array2, merged_array, counter):
             merged_array[i+j] = array2[j]
             j = j + 1
         
+#ヒープソート
+#まずはヒープの実装
+
+class MyHeap:
+    '''
+    ヒープソートのためにヒープ構造を実装してみる。 
+    データはself.array[1]から入れていく。1スタートの構造。    
+    根には最小値がくる
+    '''
     
     
+    def __init__(self, arr):
+        self.capcity = len(arr)*2
+        self.count = len(arr)
+        self.array = [0] * self.capacity
         
+    def parent(self, now):
+        if(now < 1 or now > self.count):
+            #now_pointがarrayのindexを超えている場合
+            return None
+        else:
+            #根でも0が返される。
+            return now // 2
+    
+    def right_child(self, now):
+        right = now * 2
+        if(now < 1 or now > self.count):
+            #now_pointがarrayのindexを超えている場合
+            return None
+        if(right > self.count):
+            #子がいないなら
+            return None
+        return right
+    
+    def left_child(self, now):
+        left = now * 2 + 1
+        if(now < 1 or now > self.count):
+            #now_pointがarrayのindexを超えている場合
+            return None
+        if(left > self.count):
+            #子がいないなら
+            return None
+        return left
+    
+    def sibling(self, now):
+        if(now < 1 or now > self.count):
+            #now_pointがarrayのindexを超えている場合
+            return None
+        if(now % 2 == 0):
+            return now + 1
+        else:
+            #根でも0が返される
+            return now - 1
+    
+    def getMinimum(self):
+        if(self.count == 0):
+            return None
+        else:
+            return self.array[1]
 
 if __name__ == "__main__":
     main()
