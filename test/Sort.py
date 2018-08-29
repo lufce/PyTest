@@ -8,13 +8,13 @@ import random, inspect, copy, time
 
 def main():
     #ソートすべき数値配列の生成
-    unsorted1 = list(range(1000))
+    unsorted1 = list(range(5000))
     random.shuffle(unsorted1)
-    unsorted2 = list(range(50,100))
-    unsorted3 = [3,3,2,2,1,1]
+    unsorted2 = list(range(5000))
+    unsorted3 = list(reversed(range(5000)))
     #unsorted1.extend(unsorted2)
     
-    tested_array = copy.deepcopy(unsorted1)
+    tested_array = copy.deepcopy(unsorted3)
 
     print(tested_array)
     
@@ -25,7 +25,7 @@ def main():
 #     print(insertion_sort2(tested_array))
 #     print(shell_sort(tested_array))
 #     print(merge_sort(tested_array))
-    
+#     print(heap_sort(tested_array))
     
     bubble_sort(tested_array)
     bubble_sort_improved(tested_array)
@@ -34,6 +34,7 @@ def main():
     insertion_sort2(tested_array)
     shell_sort(tested_array)
     merge_sort(tested_array)
+    heap_sort(tested_array)
     
     print("end")
 
@@ -286,11 +287,19 @@ class MyHeap:
     根には最小値がくる
     '''
     
-    
     def __init__(self, arr):
-        self.capcity = len(arr)*2
+        self.counter = 0  #ループ回数検出用
+        
+        self.capacity = len(arr)*2
         self.count = len(arr)
         self.array = [0] * self.capacity
+        
+        if(self.count > 0):
+            for i in range(1, self.count + 1):
+                self.array[i] = arr[i-1]
+        
+            for i in range(self.count // 2, 0, -1):
+                self.percolate_down(i)
         
     def parent(self, now):
         if(now < 1 or now > self.count):
@@ -329,12 +338,89 @@ class MyHeap:
         else:
             #根でも0が返される
             return now - 1
+        
+    def get_counter(self):
+        return self.counter
     
-    def getMinimum(self):
+    def get_minimum(self):
         if(self.count == 0):
             return None
         else:
             return self.array[1]
+        
+    def pop_minimum(self):
+        if(self.count == 0):
+            return None
+        else:
+            min_value = self.get_minimum()
+            
+            #配列の最後の値を先頭にコピーして、最後の値を0に初期化する。
+            self.array[1] = self.array[self.count]
+            self.array[self.count] = 0
+            self.count = self.count - 1
+            
+            #先頭の値に対してヒープ化処理をする。
+            self.percolate_down(1)
+            
+            return min_value
+            
 
+    def percolate_down(self, now):
+        
+        self.counter = self.counter + 1
+        
+        if(now > self.count):
+            return
+        
+        l_child = self.left_child(now)
+        r_child = self.right_child(now)
+        
+        if(l_child is not None and self.array[l_child] < self.array[now]):
+            min_index = l_child
+        else:
+            min_index = now
+        
+        if(r_child is not None and self.array[r_child] < self.array[min_index]):
+            min_index = r_child
+        
+        if(min_index != now):
+            temp = self.array[now]
+            self.array[now] = self.array[min_index]
+            self.array[min_index] = temp
+            
+            self.percolate_down(min_index)
+            
+    def percolate_up(self, now):
+        
+        self.counter = self.counter + 1
+        
+        if(now == 1):
+            #根まできたら終わり
+            return
+        
+        parent_index = self.parent(now)
+        
+        if(parent_index is not None and self.array[now] < self.array[parent_index]):
+            temp = self.array[parent_index]
+            self.array[parent_index] = self.array[now]
+            self.array[now] = temp
+            
+            self.percolate_up(parent_index)
+
+def heap_sort(unsorted_array):
+    t1 = time.time()
+#    counter = 0
+    working_array = copy.deepcopy(unsorted_array)
+    
+    hp = MyHeap(working_array)
+    
+    for i in range(len(working_array)):
+        working_array[i] = hp.pop_minimum()
+    
+    t2 = time.time()    
+    loop_printer(inspect.currentframe().f_code.co_name, hp.get_counter(), t2 - t1)
+
+    return working_array
+            
 if __name__ == "__main__":
     main()
