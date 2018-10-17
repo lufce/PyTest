@@ -12,3 +12,5 @@ f1 = open("ncb_top.html", "w", encoding = "UTF-8")
 # f1 = open("emboj_newarticles.html", "w", encoding = "UTF-8")
 f1.write(res.text)
 f1.close()
+
+print("end")
