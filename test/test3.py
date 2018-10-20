@@ -16,6 +16,9 @@ def get_links_and_titles_from_top_page():
     #TODO request.getの例外処理
     time.sleep(1.0)
     web = webs.get(JOURNAL_URL)
+    if web.status_code < 200 and 299 < web.status_code:
+        #TODO: そのうち接続に成功しなかった場合の処理を書かねばなるまい。
+        
     
     #================================================トップページから論文のタイトルやリンクページを拾う======
     
