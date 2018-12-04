@@ -18,6 +18,7 @@ def get_links_and_titles_from_top_page():
     web = webs.get(JOURNAL_URL)
     if web.status_code < 200 and 299 < web.status_code:
         #TODO: そのうち接続に成功しなかった場合の処理を書かねばなるまい。
+        print("status code: {]".format(web.status_code))
         
     
     #================================================トップページから論文のタイトルやリンクページを拾う======
@@ -99,4 +100,4 @@ def main():
     
 
 if __name__ == "__main__":
-    main()
+    get_links_and_titles_from_top_page()
